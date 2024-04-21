@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Conversation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('BACK.gif'); /* Replace 'background.jpg' with your image path */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            height: 500px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8); /* Translucent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .avatar {
+            position: absolute;
+            top: 20px; /* Adjust the top position as needed */
+            right: 20px; /* Adjust the right position as needed */
+            width: 300px; /* Adjust the width as needed */
+            height: 200px; /* Adjust the height as needed */
+            border-radius: 30px; /* Apply border-radius for rectangle shape */
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .conversation {
+            margin-top: 80px; /* Adjust margin to create space for the avatar */
+        }
+
+        .message {
+            background-color: rgba(255, 255, 255, 0.9); /* Translucent white message background */
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .user {
+            color: #333;
+        }
+
+        .hr {
+            color: #007bff;
+        }
+
+        /* Hover effect for messages */
+        .message:hover {
+            background-color: rgba(255, 255, 255, 0.7); /* Lighter translucent background on hover */
+            transition: background-color 0.3s;
+        }
+
+        /* Hover effect for input button */
+        .input button:hover {
+            background-color: #007bff; /* Change button background color on hover */
+            color: #fff; /* Change button text color on hover */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Hover effect for images */
+        .image-section img:hover {
+            opacity: 0.8; /* Reduce image opacity on hover */
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="avatar">
+        <img src="avatar.png" alt="HR Avatar">
+    </div>
+    <div class="conversation" id="conversation">
+        <!-- Initial conversation messages will be added dynamically -->
+    </div>
+    <div class="input">
+        <input type="text" id="userInput" placeholder="Type your response...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <div class="image-section" id="imageSection">
+        <!-- Images will be added dynamically here -->
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        var userInput = document.getElementById("userInput").value;
+
+        // Make an AJAX request to Flask server
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/process_message", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText).response;
+                displayResponse(response);
+            }
+        };
+        var data = JSON.stringify({ "message": userInput });
+        xhr.send(data);
+    }
+
+    function displayResponse(response) {
+        var conversationDiv = document.getElementById("conversation");
+        var messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+        messageDiv.textContent = "HR: " + response;
+        conversationDiv.appendChild(messageDiv);
+    }
+</script>
+
+</body>
+</html>
